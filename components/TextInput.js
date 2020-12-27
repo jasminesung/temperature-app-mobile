@@ -1,18 +1,23 @@
-import React, { Component } from 'react';
-import { TextInput, Keyboard } from 'react-native';
+import React from "react";
+import { TextInput } from "react-native";
 
-const MyTextInput = () => {
-  const [value, onChangeText] = React.useState('');
+const MyTextInput = (props) => {
+  const onInput = (temp) => {
+    props.onInputTemp(temp);
+  };
 
   return (
     <TextInput
-      style={{ height: 40, width: '80%', borderColor: 'powderblue', borderWidth: 0.5 }}
-      onChangeText={text => onChangeText(text)}
-      value={value}
-      onBlur={() => Keyboard.dismiss()}
-      keyboardType='numeric'
+      style={{
+        height: 40,
+        width: "80%",
+        borderColor: "dodgerblue",
+        borderWidth: 0.5,
+      }}
+      onChangeText={onInput}
+      keyboardType="numeric"
     />
   );
-}
+};
 
 export default MyTextInput;
