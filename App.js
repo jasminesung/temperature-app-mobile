@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Button } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { StyleSheet, Text, View, Button, Keyboard, AppState } from "react-native";
 import axios from "axios";
 
 import MyTextInput from "./components/TextInput";
@@ -8,17 +8,50 @@ import MyPicker from "./components/Dropdown";
 import DismissKeyboard from "./components/DismissKeyboard";
 
 export default function App() {
+
   useEffect(() => {
     console.log("temp", temp);
     console.log("base", base);
     console.log("result", result);
     console.log("unit", unit);
+
+    AppState.addEventListener("change", handleAppStateChange);
+
+    return () => {
+      AppState.removeEventListener("change", handleAppStateChange);
+    };
   });
+
+  const appState = useRef(AppState.currentState);
+
+  const handleAppStateChange = (nextAppState) => {
+    if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === "active"
+    ) {
+      console.log("App has come to the foreground!");
+      setClearInput(false);
+    } else {
+      setDefaultValues();
+      setClearInput(true);
+      console.log("App is in background.");
+    }
+
+    appState.current = nextAppState;
+  };
 
   const [temp, setTemp] = useState(null);
   const [base, setBase] = useState("celsius");
   const [result, setResult] = useState(null);
   const [unit, setUnit] = useState("°F");
+  const [clearInput, setClearInput] = useState(false);
+
+  const setDefaultValues = () => {
+    setTemp(null);
+    setBase('celsius');
+    setResult(null);
+    setUnit('°F');
+  }
 
   const handleTempChange = (tempValue) => {
     setResult(null);
@@ -27,6 +60,7 @@ export default function App() {
   };
 
   const handleBaseChange = (baseValue) => {
+    Keyboard.dismiss();
     setBase(baseValue);
   };
 
@@ -36,8 +70,10 @@ export default function App() {
   };
 
   const onPressConvert = (base, temp) => {
+    Keyboard.dismiss();
+    setResult(null);
     getUnit();
-    axios(`http://127.0.0.1:5000/convert?base=${base}&temp=${temp}`)
+    axios(`https://us-central1-symmetric-sonar-299910.cloudfunctions.net/convert_temp?base=${base}&temp=${temp}`)
       .then((res) => {
         if (res.data) {
           setResult(res.data);
@@ -64,7 +100,7 @@ export default function App() {
         <Text style={styles.header}>Convert Temperature🌡</Text>
         <View style={styles.tempWrapper}>
           <View style={styles.inputWrapper}>
-            <MyTextInput onInputTemp={handleTempChange} />
+            <MyTextInput clearInput={clearInput} onInputTemp={handleTempChange} />
           </View>
           <View style={styles.pickerWrapper}>
             <MyPicker onPickBase={handleBaseChange} style={styles.picker} />
