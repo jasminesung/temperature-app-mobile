@@ -1,11 +1,11 @@
 # temperature-app-mobile
 
-A mobile app built with React Native to convert temperatures from Celsius for Fahrenheit, or vice-versa. Temperature conversion is done with an [HTTP Google Cloud Function](https://github.com/jasminesung/temperature-app-backend).
+A mobile app built with React Native to convert temperatures from Celsius to Fahrenheit, or vice-versa. Temperature conversion is done with an [HTTP Google Cloud Function](https://github.com/jasminesung/temperature-app-backend).
 
 To run the app locally:
 
 1. Run `npm install`.
 
-2. Run `npm start`. The app will be launched with Expo.
+2. Run `npm start`.
 
-You can use the app on your mobile device with the Expo app by clicking this [link](https://exp.host/@jasminesung1130/mobile). :D
+Click this [link](https://exp.host/@jasminesung1130/mobile) to run this app on your mobile device with Expo. :D
